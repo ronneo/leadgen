@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../server/devEndpoint/index.js"],"names":["ServerConfigInit","LeadInit"],"mappings":";;;;;;AAAA;;AACA;;kBAEe,CACbA,kBADa,EAEbC,UAFa,C","file":"index.js","sourcesContent":["import {init as ServerConfigInit} from './serverConfig';\nimport {init as LeadInit} from './lead';\n\nexport default [\n  ServerConfigInit,\n  LeadInit,\n];\n"]}

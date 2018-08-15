@@ -1,0 +1,66 @@
+{
+  "name": "templatebot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server/server.js",
+  "scripts": {
+    "build": "./tools/build.sh",
+    "start": "./tools/start.sh",
+    "test": "jest --forceExit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alanhhwong/TemplateBot.git"
+  },
+  "engines": {
+    "node": "9.4.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "express-csv": "^0.6.0",
+    "invariant": "^2.2.2",
+    "redis": "^2.8.0",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2",
+    "winston": "^3.0.0-rc1"
+  },
+  "author": "Alan Wong",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alanhhwong/TemplateBot/issues"
+  },
+  "homepage": "https://github.com/alanhhwong/TemplateBot#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-preset-stage-3": "^6.24.1",
+    "bootstrap": "^4.0.0",
+    "css-loader": "^0.28.9",
+    "dot": "^1.1.2",
+    "file-loader": "^1.1.6",
+    "font-awesome": "^4.7.0",
+    "fs-extra": "^5.0.0",
+    "jest-cli": "^22.2.2",
+    "less": "^3.0.0",
+    "less-loader": "^4.0.5",
+    "nodemon": "^1.14.12",
+    "react": "^16.2.0",
+    "react-burger-menu": "^2.2.3",
+    "react-dom": "^16.2.0",
+    "react-responsive-modal": "^2.0.0",
+    "react-toastify": "^3.3.2",
+    "redis-js": "^0.1.2",
+    "source-map-support": "^0.5.3",
+    "style-loader": "^0.20.1",
+    "uglifyjs-webpack-plugin": "^1.1.8",
+    "url-loader": "^0.6.2",
+    "webpack": "^3.11.0",
+    "webpack-node-externals": "^1.6.0",
+    "webpack-shell-plugin": "^0.5.0"
+  }
+}
