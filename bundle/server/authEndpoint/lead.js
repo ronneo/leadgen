@@ -60,9 +60,12 @@ function loadAllResponsesForExport(dh, csv_builder) {
     return new Promise(function (resolve, _reject) {
       function _load(keys, callback) {
         if (keys.length <= 0) {
+          _logger2.default.info('No keys');
           callback();
         } else {
+
           var key = keys[0];
+          _logger2.default.info('Loading keys: ' + key);
           var rest_keys = keys.splice(1);
           loadOneUserResponse(dh, key, csv_builder).then(function () {
             _load(rest_keys, callback);

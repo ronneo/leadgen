@@ -47,9 +47,12 @@ function loadAllResponsesForExport(dh, csv_builder) {
       return new Promise((resolve, _reject) => {
         function _load(keys, callback) {
           if (keys.length <= 0) {
+            logger.info(`No keys`);
             callback();
           } else {
+
             let key = keys[0];
+            logger.info(`Loading keys: ${key}`);
             let rest_keys = keys.splice(1);
             loadOneUserResponse(dh, key, csv_builder)
               .then(() => {
