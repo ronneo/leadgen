@@ -22,6 +22,7 @@ function genCSVBuilder(dh, flatattr) {
   return dh.getQuestionFlow().then(function (question_flow) {
     var header = ['uid'];
     _logger2.default.info('Creating header: ' + header);
+    _logger2.default.info('Creating header: ' + question_flow.questions);
     question_flow.questions.forEach(function (question, index) {
       var needNoAnswer = _questionHandlers.questionHandlerMap[question.type](0, question)[1];
       if (!needNoAnswer) {
