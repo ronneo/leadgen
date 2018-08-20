@@ -2,8 +2,12 @@ import request from 'request-promise';
 
 import constant from 'common/constant';
 
+const APP_ID = 2116051335342123;
+const PAGE_ID = 255018111724726;
+/*
 const APP_ID = 132502590902997;
 const PAGE_ID = 357549008061567;
+*/
 
 export let fbtrEvents = {
   LEADGENBOT_LAUNCH_APP: 'LEADGENBOT_LAUNCH_APP',
