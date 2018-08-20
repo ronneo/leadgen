@@ -24,7 +24,9 @@ function genCSVBuilder(dh, flatattr) {
     _logger2.default.info('Creating header: ' + header);
     _logger2.default.info('Creating header: ' + question_flow.questions);
     question_flow.questions.forEach(function (question, index) {
+      _logger2.default.info('Creating header 1: ' + question.type);
       var needNoAnswer = _questionHandlers.questionHandlerMap[question.type](0, question)[1];
+      _logger2.default.info('Creating header 2: ' + needNoAnswer);
       if (!needNoAnswer) {
         header.push('q' + index);
         header.push('payload' + index);

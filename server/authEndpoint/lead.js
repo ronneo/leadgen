@@ -10,7 +10,9 @@ function genCSVBuilder(dh, flatattr) {
       logger.info(`Creating header: ${header}`);
       logger.info(`Creating header: ${question_flow.questions}`);
       question_flow.questions.forEach((question, index) => {
+        logger.info(`Creating header 1: ${question.type}`);
         let needNoAnswer = questionHandlerMap[question.type](0, question)[1];
+        logger.info(`Creating header 2: ${needNoAnswer}`);
         if (!needNoAnswer) {
           header.push(`q${index}`);
           header.push(`payload${index}`);
