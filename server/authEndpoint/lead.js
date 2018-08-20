@@ -16,6 +16,7 @@ function genCSVBuilder(dh, flatattr) {
           header.push(`timeofmessage${index}`);
         }
       });
+      logger.info(`Creating header: ${header}`);
       flatattr.push(header);
       return header;
     })
@@ -29,6 +30,7 @@ function genCSVBuilder(dh, flatattr) {
           row[index+1] = resp.payload;
           row[index+2] = resp.timeOfMessage;
         });
+        logger.info(`Creating row: ${row}`);
         flatattr.push(row);
       };
     });
