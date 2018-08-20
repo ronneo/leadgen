@@ -57,7 +57,7 @@ export default class QuestionCard extends React.Component {
 
   onChangeOptionText(optionIndex) {
     return (event) => {
-      let option = this.props.question[optionIndex];
+      let option = this.props.question.options[optionIndex];
       let new_option = Object.assign({}, option, {'text': event.target.value});
       this.props.questionFlowUtil.updateQuestionOption(this.props.qid, optionIndex, new_option);
     };
@@ -65,7 +65,7 @@ export default class QuestionCard extends React.Component {
 
   onChangeOptionRespPayload(optionIndex) {
     return (event) => {
-      let option = this.props.question[optionIndex];
+      let option = this.props.question.options[optionIndex];
       let new_option = Object.assign({}, option, {'resp_payload': event.target.value});
       this.props.questionFlowUtil.updateQuestionOption(this.props.qid, optionIndex, new_option);
     };
@@ -73,7 +73,7 @@ export default class QuestionCard extends React.Component {
 
   onChangeOptionNext(optionIndex) {
     return (event) => {
-      let option = this.props.question[optionIndex];
+      let option = this.props.question.options[optionIndex];
       let new_option = Object.assign({}, option, {'next': event.target.value});
       this.props.questionFlowUtil.updateQuestionOption(this.props.qid, optionIndex, new_option);      
     };
@@ -81,7 +81,7 @@ export default class QuestionCard extends React.Component {
 
   onRemoveOptionNext(optionIndex) {
     return (_event) => {
-      let option = this.props.question[optionIndex];
+      let option = this.props.question.options[optionIndex];
       let new_option = Object.assign({}, option, {'next': undefined});
       this.props.questionFlowUtil.updateQuestionOption(this.props.qid, optionIndex, new_option);      
     };

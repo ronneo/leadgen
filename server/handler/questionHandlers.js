@@ -1,27 +1,29 @@
+import render_template from 'server/helper/TemplateHelper';
+
 const NEED_NO_ANSWER = true;
 const NEED_ANSWER = false;
 
 export let questionHandlerMap = {
-  'greeting': (psid, question) => {
+  'greeting': (psid, question, userProfile) => {
     return [
       {
         recipient: { id: psid },
-        message: { text: question.text },      
-      }, 
+        message: { text: render_template(question.text, userProfile) },
+      },
       NEED_NO_ANSWER,
     ];
   },
 
-  'question': (psid, question) => {
+  'question': (psid, question, userProfile) => {
     return [
       {
         recipient: { id: psid },
         message: {
-          text: question.text,
+          text: render_template(question.text, userProfile),
           quick_replies: question.options.map((option) => {
             return {
               'content_type': 'text',
-              'title': option.text,
+              'title': render_template(option.text, userProfile),
               'payload': option.resp_payload,
             };
           }),
@@ -31,17 +33,17 @@ export let questionHandlerMap = {
     ];
   },
 
-  'input': (psid, question) => {
+  'input': (psid, question, userProfile) => {
     return [
       {
         recipient: { id: psid },
-        message: { text: question.text },
+        message: { text: render_template(question.text, userProfile) },
       },
       NEED_ANSWER,
     ];
   },
 
-  't&c': (psid, question) => {
+  't&c': (psid, question, userProfile) => {
     return [
       {
         recipient: { id: psid },
@@ -50,11 +52,11 @@ export let questionHandlerMap = {
             type: 'template',
             payload: {
               template_type: 'button',
-              text: question.text,
+              text: render_template(question.text, userProfile),
               buttons:[{
                 type: 'web_url',
                 url: question.url,
-                title: question.urlText,
+                title: render_template(question.urlText, userProfile),
                 'webview_height_ratio': 'compact'
               }]
             }

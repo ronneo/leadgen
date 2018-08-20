@@ -29,8 +29,8 @@ export default class QuestionFlow {
   save(key = DEFAULT_QUESTION_FLOW_KEY) {
     this.key = key;
     return this.datastore._write(
-      this.datastore.paths.question_flow, 
-      key, 
+      this.datastore.paths.question_flow,
+      key,
       JSON.stringify(this.questions),
     )
     .then(() => {
@@ -48,7 +48,7 @@ export default class QuestionFlow {
       return this.questions.length;
     } else {
       return this.questions.findIndex((question) => {
-        return question.anchor && question.anchor == anchor; 
+        return question.anchor && question.anchor == anchor;
       });
     }
   }
@@ -70,8 +70,8 @@ export default class QuestionFlow {
   }
 
   findNextQidOfQuestionInOptions(question, questionID, payload) {
-    let option = question.options.find((option) => { 
-      return option.resp_payload == payload; 
+    let option = question.options.find((option) => {
+      return option.resp_payload == payload;
     });
     if (option && option.next) {
       return this.findQidWithAnchor(option.next);

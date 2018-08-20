@@ -53,7 +53,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           request(endpoint, {question_msg}, ()=> {
             ...next msg
           });
-        }); 
+        });
       });
     but that is a callback hell, so we design a queue for storing all msgs we want to send, and reaper 
     is an infinite recursive function help us to avoid callback hell.
@@ -159,11 +159,12 @@ _DataHandler2.default.get().then(function (dh) {
   _reaper.reap();
 });
 
-function sendQuestion(recipientID, nextQid, questionFlow) {
+function sendQuestion(userProfile, nextQid, questionFlow) {
+  var recipientID = userProfile.userID;
   function _sendQuestion(q) {
     var question = questionFlow.findQuestionWithQid(q);
     if (question) {
-      var _questionHandlerMap$q = _questionHandlers.questionHandlerMap[question.type](recipientID, question),
+      var _questionHandlerMap$q = _questionHandlers.questionHandlerMap[question.type](recipientID, question, userProfile),
           _questionHandlerMap$q2 = _slicedToArray(_questionHandlerMap$q, 2),
           messageObj = _questionHandlerMap$q2[0],
           needNoAnwser = _questionHandlerMap$q2[1];

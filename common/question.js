@@ -1,5 +1,5 @@
 export let questionSamples = {
-  'greeting': () => { 
+  'greeting': () => {
     return {
       'type': 'greeting',
       'text': 'May the Force be with you!',

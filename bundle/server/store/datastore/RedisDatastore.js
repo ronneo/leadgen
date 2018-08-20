@@ -137,7 +137,7 @@ var RedisDataStore = function (_DataStore) {
             reject(err);
           } else if (!finished) {
             allkeys = allkeys.concat(keys.map(function (key) {
-              // remove prefix `${path}_` 
+              // remove prefix `${path}_`
               return key.substring(path.length + 1);
             }));
           } else if (finished) {

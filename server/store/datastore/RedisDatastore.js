@@ -43,7 +43,7 @@ export default class RedisDataStore extends DataStore {
             }
             resolve(data);
           }
-        });  
+        });
     });
   }
 
@@ -99,8 +99,8 @@ export default class RedisDataStore extends DataStore {
           reject(err);
         } else if (!finished) {
           allkeys = allkeys.concat(keys.map((key) => {
-            // remove prefix `${path}_` 
-            return key.substring(path.length + 1); 
+            // remove prefix `${path}_`
+            return key.substring(path.length + 1);
           }));
         } else if (finished) {
           resolve(allkeys);
@@ -112,7 +112,7 @@ export default class RedisDataStore extends DataStore {
   _del(path, key) {
     return new Promise((resolve, reject) => {
       let rediskey = this.formatRedisKey(path, key);
-      this._client.del(rediskey, 
+      this._client.del(rediskey,
         (err, _resp) => {
           if (err) {
             logger.error(`Redis del error: ${JSON.stringify(err)}`);

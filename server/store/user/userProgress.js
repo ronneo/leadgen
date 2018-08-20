@@ -26,8 +26,8 @@ export default class UserProgress {
 
   save() {
     return this.datastore._write(
-      this.datastore.paths.user_progress, 
-      this.userID, 
+      this.datastore.paths.user_progress,
+      this.userID,
       JSON.stringify(this.userProgress),
     )
     .then(() => {

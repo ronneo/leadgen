@@ -22,10 +22,10 @@ export let responseHandlerMap = {
           });
       } else {
         reject(new Error('reply is not quick_reply.'));
-      } 
+      }
     });
   },
-  
+
   'text_input': (message, event, questionFlow, userProgress, userResponse) => {
     return new Promise((resolve, reject) => {
       let messageText = message.text;
@@ -43,7 +43,7 @@ export let responseHandlerMap = {
           });
       } else {
         reject(new Error('reply is not text_input.'));
-      }     
+      }
     });
   },
 

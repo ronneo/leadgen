@@ -66,8 +66,8 @@ let sample_csv = [
 
 function user_response(qid) {
   return {
-    qid: qid, 
-    timeOfMessage: 19700101, 
+    qid: qid,
+    timeOfMessage: 19700101,
     payload: 'hello'
   };
 }
@@ -80,7 +80,7 @@ let express_server = null;
 beforeAll(() => {
   fs.ensureDirSync(constant.LOCAL_FILE_STORE_PATH);
   fs.outputJsonSync(
-    `${constant.LOCAL_FILE_STORE_PATH}/question_flow_default.json`, 
+    `${constant.LOCAL_FILE_STORE_PATH}/question_flow_default.json`,
     sample_questions,
   );
 });

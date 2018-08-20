@@ -71,7 +71,7 @@ let express_server = null;
 beforeAll(() => {
   fs.ensureDirSync(constant.LOCAL_FILE_STORE_PATH);
   fs.outputJsonSync(
-    `${constant.LOCAL_FILE_STORE_PATH}/question_flow_default.json`, 
+    `${constant.LOCAL_FILE_STORE_PATH}/question_flow_default.json`,
     sample_questions,
   );
 });

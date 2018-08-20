@@ -27,8 +27,8 @@ export default class AccessToken {
 
   save() {
     return this.datastore._write(
-      this.datastore.paths.access_token, 
-      KEY, 
+      this.datastore.paths.access_token,
+      KEY,
       JSON.stringify(this.allAccessTokens),
     )
     .then(() => {

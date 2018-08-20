@@ -20,7 +20,7 @@ logger.info(`app will run with constant like: ${JSON.stringify(constant, null, 2
 export function start(port) {
   let app = ExpressHelper(express(), process.cwd(), logger);
   app.use(bodyParser.json());
-  
+
   return DataHandler.get()
     .then((dh) => {
       logger.info(
@@ -43,7 +43,7 @@ export function start(port) {
           initFunc(app, dh);
         });
       }
-  
+
       return dh;
     })
     .then(() => {

@@ -38,6 +38,10 @@ var _userResponse = require('server/store/user/userResponse');
 
 var _userResponse2 = _interopRequireDefault(_userResponse);
 
+var _userProfile = require('server/store/user/userProfile');
+
+var _userProfile2 = _interopRequireDefault(_userProfile);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -92,7 +96,8 @@ var DataHandler = function () {
         bot_config: 'bot_config',
         question_flow: 'question_flow',
         user_progress: 'user_progres',
-        user_response: 'user_response'
+        user_response: 'user_response',
+        user_profile: 'user_profile'
       };
 
       switch (this.datastoreType) {
@@ -139,6 +144,11 @@ var DataHandler = function () {
     key: 'getAccessToken',
     value: function getAccessToken() {
       return new _accessToken2.default(this).load();
+    }
+  }, {
+    key: 'getUserProfile',
+    value: function getUserProfile(userID) {
+      return new _userProfile2.default(this).load(userID);
     }
   }]);
 

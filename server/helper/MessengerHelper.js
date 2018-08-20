@@ -24,7 +24,7 @@ import { fbtrEvents, fbtr } from 'common/fbtr';
           request(endpoint, {question_msg}, ()=> {
             ...next msg
           });
-        }); 
+        });
       });
     but that is a callback hell, so we design a queue for storing all msgs we want to send, and reaper 
     is an infinite recursive function help us to avoid callback hell.
@@ -52,7 +52,7 @@ class Reaper {
             uri: `${constant.GRAPH_BASE_URL}/me/messages`,
             qs: { access_token: page_access_token },
             json: messageObj,
-          }, 
+          },
           (err, _res, body) => {
             if (err) {
               logger.info(`Message sending failed with body ${JSON.stringify(body)}}`);
@@ -66,7 +66,7 @@ class Reaper {
         });
     });
   }
-  
+
   reap(timeout) {
     let _timeout = timeout || 500;
     let reaper = this;
@@ -114,11 +114,12 @@ DataHandler.get()
     _reaper.reap();
   });
 
-export function sendQuestion(recipientID, nextQid, questionFlow) {
+export function sendQuestion(userProfile, nextQid, questionFlow) {
+  var recipientID = userProfile.userID;
   function _sendQuestion(q) {
     let question = questionFlow.findQuestionWithQid(q);
     if (question) {
-      let [messageObj, needNoAnwser] = questionHandlerMap[question.type](recipientID, question);
+      let [messageObj, needNoAnwser] = questionHandlerMap[question.type](recipientID, question, userProfile);
       _reaper.sendMessage(recipientID, messageObj);
       if (needNoAnwser) {
         let nq = questionFlow.findNextQidOfQuestion(question, q);

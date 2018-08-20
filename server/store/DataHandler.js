@@ -6,6 +6,7 @@ import QuestionFlow from 'server/store/question/questionFlow';
 import RedisDataStore from 'server/store/datastore/RedisDatastore';
 import UserProgress from 'server/store/user/userProgress';
 import UserResponse from 'server/store/user/userResponse';
+import UserProfile from 'server/store/user/userProfile';
 
 let datahandler_singleton_promise = null;
 let datahandler_singleton = null;
@@ -17,7 +18,7 @@ export default class DataHandler {
       return datahandler_singleton_promise;
     }
     if (!datahandler_singleton) {
-      datahandler_singleton_promise = 
+      datahandler_singleton_promise =
         DataHandler._get()
           .then((dh) => {
             datahandler_singleton = dh;
@@ -49,8 +50,9 @@ export default class DataHandler {
       access_token: 'access_token',
       bot_config: 'bot_config',
       question_flow: 'question_flow',
-      user_progress: 'user_progres', 
+      user_progress: 'user_progres',
       user_response: 'user_response',
+      user_profile: 'user_profile',
     };
 
     switch (this.datastoreType) {
@@ -97,4 +99,7 @@ export default class DataHandler {
     return (new AccessToken(this)).load();
   }
 
+  getUserProfile(userID) {
+    return (new UserProfile(this)).load(userID);
+  }
 }

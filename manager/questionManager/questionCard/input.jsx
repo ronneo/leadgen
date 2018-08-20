@@ -33,6 +33,11 @@ export default class InputCard extends React.Component {
     this.props.questionFlowUtil.updateQuestion(this.props.qid, new_question);    
   }
 
+  onChangeNext(event) {
+    let new_question = Object.assign({}, this.props.question, {next: event.target.value});
+    this.props.questionFlowUtil.updateQuestion(this.props.qid, new_question);    
+  }
+  
   onRemoveNext(_event) {
     let new_question = Object.assign({}, this.props.question, {next: undefined});
     this.props.questionFlowUtil.updateQuestion(this.props.qid, new_question);
@@ -56,7 +61,7 @@ export default class InputCard extends React.Component {
             this.props.qid,
             this.props.question, 
             this.props.questionFlowUtil,
-            this.onChangeText.bind(this),
+            this.onChangeNext.bind(this),
             this.onRemoveNext.bind(this),
           )}
         </div>

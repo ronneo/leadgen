@@ -12,6 +12,14 @@ var _logger = require('common/logger');
 
 var _logger2 = _interopRequireDefault(_logger);
 
+var _constant = require('common/constant');
+
+var _constant2 = _interopRequireDefault(_constant);
+
+var _fbrequest = require('common/fbrequest');
+
+var _fbrequest2 = _interopRequireDefault(_fbrequest);
+
 var _MessengerHelper = require('server/helper/MessengerHelper');
 
 var _responseHandlers = require('server/handler/responseHandlers');
@@ -28,16 +36,36 @@ function receivedMessage(event, dh) {
 
   _logger2.default.info('Received message for user ' + senderID + ' and page ' + recipientID + ' at ' + timeOfMessage + ' ' + ('with message: ' + JSON.stringify(message)));
 
-  Promise.all([dh.getQuestionFlow(), dh.getUserProgress(senderID), dh.getUserResponse(senderID)]).then(function (_ref) {
-    var _ref2 = _slicedToArray(_ref, 3),
+  Promise.all([dh.getQuestionFlow(), dh.getUserProgress(senderID), dh.getUserResponse(senderID), dh.getUserProfile(senderID), dh.getAccessToken()]).then(function (_ref) {
+    var _ref2 = _slicedToArray(_ref, 5),
         questionFlow = _ref2[0],
         userProgress = _ref2[1],
-        userResponse = _ref2[2];
+        userResponse = _ref2[2],
+        userProfile = _ref2[3],
+        accessToken = _ref2[4];
 
     _logger2.default.info('user ' + userProgress.userID + ' at progress ' + JSON.stringify(userProgress.userProgress));
     if (event.postback && event.postback.referral) {
       // TODO: handle user info and referral info here
     }
+
+    if (!userProfile.isProfileFetched()) {
+      // user profile not found in data store, fetching from graph api
+      var page_access_token = accessToken.get(_constant2.default.PAGE_ACCESS_TOKEN_KEY);
+      _logger2.default.info('Fetching user profile for ' + userProfile.userID);
+      _fbrequest2.default.get({
+        uri: _constant2.default.GRAPH_BASE_URL + '/' + userProfile.userID,
+        qs: {
+          'access_token': page_access_token
+        }
+      }).then(function (profile) {
+        _logger2.default.info('user profile fetched ' + JSON.stringify(profile));
+        userProfile.update(profile);
+      }).catch(function (err) {
+        _logger2.default.error('Profile fetch failed with ' + err);
+      });
+    }
+
     var _userProgress$userPro = userProgress.userProgress,
         expectRespType = _userProgress$userPro.expectRespType,
         nextQid = _userProgress$userPro.nextQid;
@@ -46,7 +74,7 @@ function receivedMessage(event, dh) {
     nextQid = nextQid || 0;
     _responseHandlers.responseHandlerMap[expectRespType](message, event, questionFlow, userProgress, userResponse).then(function (nextQid) {
       // we can hanlde this response, go to next question
-      return (0, _MessengerHelper.sendQuestion)(senderID, nextQid, questionFlow).then(function (_ref3) {
+      return (0, _MessengerHelper.sendQuestion)(userProfile, nextQid, questionFlow).then(function (_ref3) {
         var _ref4 = _slicedToArray(_ref3, 2),
             stopAtQid = _ref4[0],
             nextExpectRespType = _ref4[1];
@@ -61,7 +89,7 @@ function receivedMessage(event, dh) {
       _logger2.default.error('Oops, can not handle user response because ' + JSON.stringify(err));
       _logger2.default.info('fall back to re-send last question.');
       // can not handle this response, repeat last question
-      (0, _MessengerHelper.sendQuestion)(senderID, nextQid, questionFlow).then(function (_ref5) {
+      (0, _MessengerHelper.sendQuestion)(userProfile, nextQid, questionFlow).then(function (_ref5) {
         var _ref6 = _slicedToArray(_ref5, 2),
             stopAtQid = _ref6[0],
             nextExpectRespType = _ref6[1];

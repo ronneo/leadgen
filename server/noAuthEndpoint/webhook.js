@@ -1,4 +1,6 @@
 import logger from 'common/logger';
+import constant from 'common/constant';
+import fbrequest from 'common/fbrequest';
 import {sendQuestion} from 'server/helper/MessengerHelper';
 import {responseHandlerMap} from 'server/handler/responseHandlers';
 import {fbtrEvents, fbtr} from 'common/fbtr';
@@ -18,19 +20,41 @@ function receivedMessage(event, dh) {
     dh.getQuestionFlow(),
     dh.getUserProgress(senderID),
     dh.getUserResponse(senderID),
+    dh.getUserProfile(senderID),
+    dh.getAccessToken(),
   ])
-  .then(([questionFlow, userProgress, userResponse]) => {
+  .then(([questionFlow, userProgress, userResponse, userProfile, accessToken]) => {
     logger.info(`user ${userProgress.userID} at progress ${JSON.stringify(userProgress.userProgress)}`);
     if (event.postback && event.postback.referral) {
       // TODO: handle user info and referral info here
     }
+
+    if (!userProfile.isProfileFetched()) {
+      // user profile not found in data store, fetching from graph api
+      var page_access_token = accessToken.get(constant.PAGE_ACCESS_TOKEN_KEY);
+      logger.info(`Fetching user profile for ${userProfile.userID}`);
+      fbrequest.get({
+        uri: `${constant.GRAPH_BASE_URL}/${userProfile.userID}`,
+        qs: {
+          'access_token': page_access_token,
+        },
+      })
+      .then((profile) => {
+        logger.info(`user profile fetched ${JSON.stringify(profile)}`);
+        userProfile.update(profile);
+      })
+      .catch((err) => {
+        logger.error(`Profile fetch failed with ${err}`);
+      });
+    }
+
     let {expectRespType, nextQid} = userProgress.userProgress;
     expectRespType = expectRespType || 'genesis';
     nextQid = nextQid || 0;
     responseHandlerMap[expectRespType](message, event, questionFlow, userProgress, userResponse)
       .then((nextQid) => {
         // we can hanlde this response, go to next question
-        return sendQuestion(senderID, nextQid, questionFlow)
+        return sendQuestion(userProfile, nextQid, questionFlow)
           .then(([stopAtQid, nextExpectRespType]) => {
             userProgress.update({
               expectRespType: nextExpectRespType,
@@ -43,7 +67,7 @@ function receivedMessage(event, dh) {
         logger.error(`Oops, can not handle user response because ${JSON.stringify(err)}`);
         logger.info('fall back to re-send last question.');
         // can not handle this response, repeat last question
-        sendQuestion(senderID, nextQid, questionFlow)
+        sendQuestion(userProfile, nextQid, questionFlow)
           .then(([stopAtQid, nextExpectRespType]) => {
             userProgress.update({
               expectRespType: nextExpectRespType,
@@ -63,9 +87,9 @@ export function init(app, dh) {
       res.send('Error, wrong validation token');
     }
   });
-  
+
   app.post('/webhook', (req, res) => {
-    let data = req.body;  
+    let data = req.body;
     if (data.object == 'page') {
       data.entry.forEach((pageEntry) => {
         pageEntry.messaging.forEach((messagingEvent) => {
