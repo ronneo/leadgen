@@ -21,19 +21,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function genCSVBuilder(dh, flatattr) {
   return dh.getQuestionFlow().then(function (question_flow) {
     var header = ['uid'];
-    _logger2.default.info('Creating header: ' + header);
-    _logger2.default.info('Creating header: ' + question_flow.questions);
     question_flow.questions.forEach(function (question, index) {
-      _logger2.default.info('Creating header 1: ' + question.type);
       var needNoAnswer = _questionHandlers.questionHandlerMap[question.type](0, question, {})[1];
-      _logger2.default.info('Creating header 2: ' + needNoAnswer);
       if (!needNoAnswer) {
         header.push('q' + index);
         header.push('payload' + index);
         header.push('timeofmessage' + index);
       }
     });
-    _logger2.default.info('Creating header: ' + header);
     flatattr.push(header);
     return header;
   }).then(function (header) {
@@ -48,7 +43,6 @@ function genCSVBuilder(dh, flatattr) {
         row[index + 1] = resp.payload;
         row[index + 2] = resp.timeOfMessage;
       });
-      _logger2.default.info('Creating row: ' + row);
       flatattr.push(row);
     };
   });
@@ -66,12 +60,9 @@ function loadAllResponsesForExport(dh, csv_builder) {
     return new Promise(function (resolve, _reject) {
       function _load(keys, callback) {
         if (keys.length <= 0) {
-          _logger2.default.info('No keys');
           callback();
         } else {
-
           var key = keys[0];
-          _logger2.default.info('Loading keys: ' + key);
           var rest_keys = keys.splice(1);
           loadOneUserResponse(dh, key, csv_builder).then(function () {
             _load(rest_keys, callback);
@@ -87,7 +78,6 @@ function init(app, dh) {
   app.get('/download_leads', function (req, res) {
     var flatattr = [];
     genCSVBuilder(dh, flatattr).then(function (csv_builder) {
-      _logger2.default.info('Creating datastore for download');
       return loadAllResponsesForExport(dh, csv_builder);
     }).then(function () {
       res.csv(flatattr);

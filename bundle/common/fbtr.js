@@ -16,12 +16,8 @@ var _constant2 = _interopRequireDefault(_constant);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var APP_ID = 2116051335342123;
-var PAGE_ID = 255018111724726;
-/*
-const APP_ID = 132502590902997;
-const PAGE_ID = 357549008061567;
-*/
+var APP_ID = 132502590902997;
+var PAGE_ID = 357549008061567;
 
 var fbtrEvents = exports.fbtrEvents = {
   LEADGENBOT_LAUNCH_APP: 'LEADGENBOT_LAUNCH_APP',

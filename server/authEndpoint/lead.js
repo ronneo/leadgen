@@ -7,19 +7,14 @@ function genCSVBuilder(dh, flatattr) {
   return dh.getQuestionFlow()
     .then((question_flow) => {
       let header = ['uid'];
-      logger.info(`Creating header: ${header}`);
-      logger.info(`Creating header: ${question_flow.questions}`);
       question_flow.questions.forEach((question, index) => {
-        logger.info(`Creating header 1: ${question.type}`);
-        let needNoAnswer = questionHandlerMap[question.type](0, question, {})[1];
-        logger.info(`Creating header 2: ${needNoAnswer}`);
+        let needNoAnswer = questionHandlerMap[question.type](0, question)[1];
         if (!needNoAnswer) {
           header.push(`q${index}`);
           header.push(`payload${index}`);
           header.push(`timeofmessage${index}`);
         }
       });
-      logger.info(`Creating header: ${header}`);
       flatattr.push(header);
       return header;
     })
@@ -33,7 +28,6 @@ function genCSVBuilder(dh, flatattr) {
           row[index+1] = resp.payload;
           row[index+2] = resp.timeOfMessage;
         });
-        logger.info(`Creating row: ${row}`);
         flatattr.push(row);
       };
     });
@@ -53,12 +47,9 @@ function loadAllResponsesForExport(dh, csv_builder) {
       return new Promise((resolve, _reject) => {
         function _load(keys, callback) {
           if (keys.length <= 0) {
-            logger.info(`No keys`);
             callback();
           } else {
-
             let key = keys[0];
-            logger.info(`Loading keys: ${key}`);
             let rest_keys = keys.splice(1);
             loadOneUserResponse(dh, key, csv_builder)
               .then(() => {
@@ -76,7 +67,6 @@ export function init(app, dh) {
     let flatattr = [];
     genCSVBuilder(dh, flatattr)
       .then((csv_builder) => {
-        logger.info(`Creating datastore for download`);
         return loadAllResponsesForExport(dh, csv_builder);
       })
       .then(() => {
