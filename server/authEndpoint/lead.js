@@ -7,6 +7,7 @@ function genCSVBuilder(dh, flatattr) {
   return dh.getQuestionFlow()
     .then((question_flow) => {
       let header = ['uid'];
+      logger.info(`Creating header: ${header}`);
       question_flow.questions.forEach((question, index) => {
         let needNoAnswer = questionHandlerMap[question.type](0, question)[1];
         if (!needNoAnswer) {
@@ -70,6 +71,7 @@ export function init(app, dh) {
     let flatattr = [];
     genCSVBuilder(dh, flatattr)
       .then((csv_builder) => {
+        logger.info(`Creating datastore for download`);
         return loadAllResponsesForExport(dh, csv_builder);
       })
       .then(() => {
