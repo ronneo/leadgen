@@ -1,12 +1,14 @@
 import constant from 'common/constant';
 import logger from 'common/logger';
 import fbrequest from 'common/fbrequest';
+import * as url from 'url';
 
 export default class FBGraphHelper {
 
   static setWebsiteURL() {
     let params = {
       access_token: constant.FB_APP_ACCESS_TOKEN,
+      app_domains: [url.parse(constant.HEROKU_APP_URL).hostname],
       website_url: constant.HEROKU_APP_URL,
     };
     logger.info(`Setting Website URL to ${constant.HEROKU_APP_URL} with param: ${JSON.stringify(params)}`);
@@ -32,7 +34,7 @@ export default class FBGraphHelper {
       json: {
         access_token: constant.FB_APP_ACCESS_TOKEN,
         object: 'page',
-        callback_url: constant.CALLBACK_URL,
+        callback_url: constant.HEROKU_APP_URL + constant.WEBHOOK_PATH,
         fields: ['messages', 'messaging_postbacks'],
         verify_token: constant.WEBHOOK_VERIFY_TOKEN
       },

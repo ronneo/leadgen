@@ -35,4 +35,22 @@ export let questionSamples = {
       'urlText': 'No, never click it',
     };
   },
+  'carousel': () => {
+    return {
+      'type': 'carousel',
+      'elements': [
+        {
+          'title': 'element1 title',
+          'subtitle': 'element2 subtitle',
+          'image_url': '',
+          'url': '',
+          'buttons': [
+            {
+              'title': 'Button Title'
+            },
+          ],
+        },
+      ]
+    };
+  },
 };

@@ -6,6 +6,7 @@ import constant from 'manager/constant';
 import {questionSamples} from 'common/question';
 import {questionCardGeneratorMap} from './questionCard/index';
 import Anchor from './questionCard/anchor.jsx';
+import AppEvent from './questionCard/appEvent.jsx';
 import ConditionalLogicHelper from './questionCard/ConditionalLogicHelper.jsx';
 import {Link} from 'manager/components.jsx';
 
@@ -99,7 +100,7 @@ export default class QuestionsConfig extends React.Component {
       [new_question],
       this.state.questions.slice(qid+1),
     );
-    this. setState({questions: new_questions});
+    this.setState({questions: new_questions});
   }
 
   saveChanges() {
@@ -174,18 +175,27 @@ export default class QuestionsConfig extends React.Component {
     this.setState({questions: new_questions});
   }
 
+  onChangeEvent(qid, obj) {
+    let question = this.state.questions[qid];
+    question.event = obj;
+    let new_questions = [].concat(
+      this.state.questions.slice(0, qid),
+      question,
+      this.state.questions.slice(qid + 1),
+    );
+    this.setState({questions: new_questions});
+  }
+
   onAddNext(qid) {
     return (_event) => {
       let quesiton = this.state.questions[qid];
       let anchor = (new QuestionFlowUtil(this.state.questions, this)).getAllAnchors()[0];
       let new_question = Object.assign({}, quesiton, {'next': anchor});
-      this.updateQuestion(qid, new_question);  
+      this.updateQuestion(qid, new_question);
     };
   }
 
   onPaste(event) {
-    event.stopPropagation();
-    event.preventDefault();
     let clipboardData = event.clipboardData || window.clipboardData;
     let pastedData = clipboardData.getData('Text');
     try {
@@ -197,8 +207,10 @@ export default class QuestionsConfig extends React.Component {
         showModalPasteQuestionJSONDialog: true,
         pastedQuestions: pastedQuestions,
       });
+      event.stopPropagation();
+      event.preventDefault();
     } catch (e) {
-      console.error(e);
+      // ignore if pasted data isn't JSON
     }
   }
 
@@ -207,6 +219,8 @@ export default class QuestionsConfig extends React.Component {
     return (
       <div className="card-header">
         <Anchor qid={index} question={question} onChangeAnchor={this.onChangeAnchor.bind(this)} />
+        <AppEvent qid={index} question={question} onChangeEvent={this.onChangeEvent.bind(this)} />
+        <div />
         <b>{question.type}</b> &nbsp;&nbsp;
         #{index} &nbsp;&nbsp;
         <Link onClick={this.moveQuestionDown(index)} 
@@ -249,8 +263,8 @@ export default class QuestionsConfig extends React.Component {
     return this.state.questions.map((question, index) => {
       let cardjsx = questionCardGeneratorMap[question.type](
         index,
-        question, 
-        this.renderCommonCardTools(index), 
+        question,
+        this.renderCommonCardTools(index),
         new QuestionFlowUtil(this.state.questions, this),
       );
       return (
@@ -268,12 +282,12 @@ export default class QuestionsConfig extends React.Component {
     return (
       <div className="input-group">
         <select className="custom-select"
-          value={this.state.newQuestionType} 
+          value={this.state.newQuestionType}
           onChange={this.changeNewQuestionType.bind(this)}>
           {options}
         </select>
         <div className="input-group-append">
-          <Link className="btn btn-primary" 
+          <Link className="btn btn-primary"
             onClick={this.addNewQuestion.bind(this)}>
             New Question
           </Link>
@@ -300,7 +314,7 @@ export default class QuestionsConfig extends React.Component {
 
   renderFooterButtons() {
     return (
-      // hack: set zIndex to be 1 so it on top of question cards, 
+      // hack: set zIndex to be 1 so it on top of question cards,
       // but in below of modal dialogs
       <div className="footer fixed-bottom" style={{zIndex: '1'}}>
         <div className="container">

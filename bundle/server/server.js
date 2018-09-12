@@ -15,17 +15,13 @@ var _express2 = _interopRequireDefault(_express);
 
 require('express-csv');
 
-var _fs = require('fs');
-
-var _fs2 = _interopRequireDefault(_fs);
-
-var _https = require('https');
-
-var _https2 = _interopRequireDefault(_https);
-
 var _http = require('http');
 
 var _http2 = _interopRequireDefault(_http);
+
+var _requestPromise = require('request-promise');
+
+var _requestPromise2 = _interopRequireDefault(_requestPromise);
 
 var _constant = require('common/constant');
 
@@ -67,6 +63,10 @@ function start(port) {
   var app = (0, _ExpressHelper2.default)((0, _express2.default)(), process.cwd(), _logger2.default);
   app.use(_bodyParser2.default.json());
 
+  if (!port) {
+    port = parseInt(process.env.PORT || 5000, 10);
+  }
+
   return _DataHandler2.default.get().then(function (dh) {
     _logger2.default.info('data handler init as ' + dh.datastoreType + ' ' + JSON.stringify(dh.datastore.paths, null, 2));
 
@@ -90,19 +90,30 @@ function start(port) {
     return dh;
   }).then(function () {
     return new Promise(function (resolve, reject) {
-      // liyuhk: for heroku, according to:
-      // https://stackoverflow.com/questions/25148507/https-ssl-on-heroku-node-express
-      // we do not need to deal with https, as heroku has us covered with their https router,
-      // so only for local dev  we start an https server
-      var server = process.env.NODE_ENV === 'dev' ? _https2.default.createServer({
-        key: _fs2.default.readFileSync('./var/server/server.key'),
-        cert: _fs2.default.readFileSync('./var/server/server.crt')
-      }, app) : _http2.default.createServer(app);
-      var listener = server.listen(port || process.env.PORT || 5000, function (err) {
+      if (process.env.NODE_ENV === 'dev') {
+        _requestPromise2.default.get({
+          uri: 'http://localhost:' + (port + 1) + '/localtunnel'
+        }).then(function (body) {
+          _constant2.default.HEROKU_APP_URL = body;
+          resolve();
+        }).catch(function (err) {
+          reject(err);
+        });
+      } else {
+        resolve();
+      }
+    });
+  }).then(function () {
+    return new Promise(function (resolve, reject) {
+      var server = _http2.default.createServer(app);
+      var listener = server.listen(port, function (err) {
         if (err) {
           reject(err);
         } else {
           _logger2.default.info('Your app is listening on port ' + listener.address().port);
+          if (process.env.NODE_ENV === 'dev') {
+            _logger2.default.info('Please access your server with tunnel:*** ' + _constant2.default.HEROKU_APP_URL + ' ***');
+          }
           resolve(listener);
         }
       });
@@ -113,6 +124,8 @@ function start(port) {
 if (require.main === module) {
   start().then(function (_listener) {
     _FBGraphHelper2.default.setWebsiteURL();
-  });
+  }).catch(function (err) {
+    _logger2.default.error('Unable to set Website URL: ' + err.message);
+  });;
 }
 //# sourceMappingURL=server.js.map

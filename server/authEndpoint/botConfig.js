@@ -12,7 +12,7 @@ export function init(app, dh) {
           uri: `${constant.GRAPH_BASE_URL}/me/messenger_profile`,
           qs: {
             'access_token': page_access_token,
-            'fields': 'greeting', 
+            'fields': 'greeting',
           },
         });
       })

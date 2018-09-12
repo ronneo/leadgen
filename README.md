@@ -11,19 +11,14 @@ Deploy to heorku
 Local developing
 ====
 
-install dependencies first
-
-* `ngrok`: install it with `brew cask install ngrok`
-
 steps
 1. `npm install`.
 2. `cp sample/dot.env.sample .env`, modify app id and app secret inside to be yours, leave `HEROKU_LOCAL_URL` variable as is, no need to worry.
-3. `./tools/gen_local_cert.sh` to generate your server key and crt file, please do anwser all questions, can be fake info.
-4. `cp sample/data/question_flow_default.json var/data/` if you do not have any questions from your own.
-5. Enable API access in your app settings: In app dashboard, go to Settings → Advanced, scroll down and find the “Allow API Access to App Settings”, toggle to enable.
-6. `heroku local` to start the server
-7. go to `https://localhost:5000` for the setup UI, connect your page.
-8. go to your bot for testing.
+3. `cp sample/data/question_flow_default.json var/data/` if you do not have any questions from your own.
+4. Enable API access in your app settings: In app dashboard, go to Settings → Advanced, scroll down and find the “Allow API Access to App Settings”, toggle to enable.
+5. `heroku local` to start the server
+6. pay attenton to the log, and go to tunnel URL in the log output for the setup UI, connect your page.
+7. go to your bot for testing.
 
 Local developing with Redis
 ====
@@ -35,12 +30,11 @@ install redis first
 steps
 1. `npm install`.
 2. `cp sample/dot.env.sample .env`, modify app id and app secret inside to be yours, leave `HEROKU_LOCAL_URL` variable as is, no need to worry.
-3. `./tools/gen_local_cert.sh` to generate your server key and crt file, please do anwser all questions, can be fake info.
-4. `cp sample/dot.redis.env.sample .redis.env`, do not modify anything
-5. Enable API access in your app settings: In app dashboard, go to Settings → Advanced, scroll down and find the “Allow API Access to App Settings”, toggle to enable.
-6. `heroku local` to start the server
-7. go to `https://localhost:5000` for the setup UI, connect your page.
-8. go to your bot for testing.
+3. `cp sample/dot.redis.env.sample .redis.env`, do not modify anything
+4. Enable API access in your app settings: In app dashboard, go to Settings → Advanced, scroll down and find the “Allow API Access to App Settings”, toggle to enable.
+5. `heroku local` to start the server
+6. pay attenton to the log, and go to tunnel URL in the log output for the setup UI, connect your page.
+7. go to your bot for testing.
 
 With redis how to check the data
 1. `cat .redis.env` to find out redis PORT

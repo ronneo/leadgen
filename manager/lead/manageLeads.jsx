@@ -2,7 +2,7 @@ import request from 'request-promise';
 import React from 'react';
 import { toast } from 'react-toastify';
 
-import constant from 'common/constant';
+import constant from 'manager/constant';
 import { Link } from 'manager/components.jsx';
 
 export default class ManageLeads extends React.Component {

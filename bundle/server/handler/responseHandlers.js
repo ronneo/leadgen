@@ -50,6 +50,23 @@ var responseHandlerMap = exports.responseHandlerMap = {
     });
   },
 
+  'postback': function postback(message, event, questionFlow, userProgress, userResponse) {
+    return new Promise(function (resolve, reject) {
+      var timeOfMessage = event.timestamp;
+
+      var payload = message;
+      var stopAtQid = userProgress.userProgress.stopAtQid;
+
+      var nextQid = userProgress.findNextQid(questionFlow, payload);
+
+      userResponse.push({ qid: stopAtQid, timeOfMessage: timeOfMessage, payload: payload }).then(function () {
+        resolve(nextQid);
+      }).catch(function (err) {
+        reject(err);
+      });
+    });
+  },
+
   'finished': function finished(_message, _event, _questionFlow, _userProgress, _userResponse) {
     return new Promise(function (_resolve, reject) {
       reject();

@@ -26,6 +26,8 @@ var _responseHandlers = require('server/handler/responseHandlers');
 
 var _fbtr = require('common/fbtr');
 
+var _cfbtr = require('common/cfbtr');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function receivedMessage(event, dh) {
@@ -68,11 +70,23 @@ function receivedMessage(event, dh) {
 
     var _userProgress$userPro = userProgress.userProgress,
         expectRespType = _userProgress$userPro.expectRespType,
+        stopAtQid = _userProgress$userPro.stopAtQid,
         nextQid = _userProgress$userPro.nextQid;
 
     expectRespType = expectRespType || 'genesis';
     nextQid = nextQid || 0;
     _responseHandlers.responseHandlerMap[expectRespType](message, event, questionFlow, userProgress, userResponse).then(function (nextQid) {
+      //before going to next question, check if this question requires event to be fired
+      var currentQuestion = questionFlow.findQuestionWithQid(stopAtQid);
+
+      if (currentQuestion.event ? currentQuestion.event.endFire : false) {
+        _logger2.default.info('Trigger reply custom event: ' + currentQuestion.event.name + '.');
+        (0, _cfbtr.cfbtr)(currentQuestion.event.name, currentQuestion, senderID, {
+          trigger: 'END',
+          payload: JSON.stringify(message)
+        });
+      }
+
       // we can hanlde this response, go to next question
       return (0, _MessengerHelper.sendQuestion)(userProfile, nextQid, questionFlow).then(function (_ref3) {
         var _ref4 = _slicedToArray(_ref3, 2),
@@ -105,7 +119,7 @@ function receivedMessage(event, dh) {
 }
 
 function init(app, dh) {
-  app.get('/webhook', function (req, res) {
+  app.get(_constant2.default.WEBHOOK_PATH, function (req, res) {
     if (req.query['hub.verify_token'] === 'TEMPLATE_BOT') {
       res.send(req.query['hub.challenge']);
     } else {
@@ -113,7 +127,7 @@ function init(app, dh) {
     }
   });
 
-  app.post('/webhook', function (req, res) {
+  app.post(_constant2.default.WEBHOOK_PATH, function (req, res) {
     var data = req.body;
     if (data.object == 'page') {
       data.entry.forEach(function (pageEntry) {

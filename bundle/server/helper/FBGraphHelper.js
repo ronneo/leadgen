@@ -18,6 +18,12 @@ var _fbrequest = require('common/fbrequest');
 
 var _fbrequest2 = _interopRequireDefault(_fbrequest);
 
+var _url = require('url');
+
+var url = _interopRequireWildcard(_url);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -32,6 +38,7 @@ var FBGraphHelper = function () {
     value: function setWebsiteURL() {
       var params = {
         access_token: _constant2.default.FB_APP_ACCESS_TOKEN,
+        app_domains: [url.parse(_constant2.default.HEROKU_APP_URL).hostname],
         website_url: _constant2.default.HEROKU_APP_URL
       };
       _logger2.default.info('Setting Website URL to ' + _constant2.default.HEROKU_APP_URL + ' with param: ' + JSON.stringify(params));
@@ -56,7 +63,7 @@ var FBGraphHelper = function () {
         json: {
           access_token: _constant2.default.FB_APP_ACCESS_TOKEN,
           object: 'page',
-          callback_url: _constant2.default.CALLBACK_URL,
+          callback_url: _constant2.default.HEROKU_APP_URL + _constant2.default.WEBHOOK_PATH,
           fields: ['messages', 'messaging_postbacks'],
           verify_token: _constant2.default.WEBHOOK_VERIFY_TOKEN
         }

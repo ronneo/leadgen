@@ -102,6 +102,35 @@ var QuestionFlow = function () {
         return questionID + 1;
       }
     }
+  }, {
+    key: 'findNextQidOfQuestionInElements',
+    value: function findNextQidOfQuestionInElements(question, questionID, payload) {
+      var _this3 = this;
+
+      var nextQid = null;
+
+      question.elements.forEach(function (element) {
+        if (nextQid) {
+          return;
+        }
+
+        if (element.buttons) {
+          var button = element.buttons.find(function (button) {
+            return button.url == payload;
+          });
+
+          if (button && button.next) {
+            nextQid = _this3.findQidWithAnchor(button.next);
+          }
+        }
+      });
+
+      if (nextQid) {
+        return nextQid;
+      } else {
+        return questionID + 1;
+      }
+    }
   }]);
 
   return QuestionFlow;

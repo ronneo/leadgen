@@ -50,6 +50,8 @@ export default class UserProgress {
     let question = questionFlow.findQuestionWithQid(stopAtQid);
     if (question.options) {
       return questionFlow.findNextQidOfQuestionInOptions(question, stopAtQid, payload);
+    } else if (question.elements) {
+      return questionFlow.findNextQidOfQuestionInElements(question, stopAtQid, payload);
     } else {
       return questionFlow.findNextQidOfQuestion(question, stopAtQid);
     }

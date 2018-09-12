@@ -36,6 +36,27 @@ var questionSamples = exports.questionSamples = {
       'url': 'http://www.starwars.com/news/40-memorable-star-wars-quotes',
       'urlText': 'No, never click it'
     };
+  },
+  'carousel': function carousel() {
+    return {
+      'type': 'carousel',
+      'elements': [{
+        'title': 'element1 title',
+        'subtitle': 'element2 subtitle',
+        'image_url': '',
+        'url': '',
+        'buttons': [{
+          'title': 'Button Title',
+          'url': ''
+        }]
+      }]
+    };
+  },
+  'image': function image() {
+    return {
+      'type': 'image',
+      'url': 'http://www.starwars.com/news/40-memorable-star-wars-quotes.jpg'
+    };
   }
 };
 //# sourceMappingURL=question.js.map

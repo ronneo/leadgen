@@ -47,6 +47,24 @@ export let responseHandlerMap = {
     });
   },
 
+  'postback': (message, event, questionFlow, userProgress, userResponse) => {
+    return new Promise((resolve, reject) => {
+      let timeOfMessage = event.timestamp;
+
+      let payload = message;
+      let {stopAtQid} = userProgress.userProgress;
+      let nextQid = userProgress.findNextQid(questionFlow, payload);
+
+      userResponse.push({ qid: stopAtQid, timeOfMessage, payload })
+      .then(() => {
+        resolve(nextQid);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+    });
+  },
+
   'finished': (_message, _event, _questionFlow, _userProgress, _userResponse) => {
     return new Promise((_resolve, reject) => {
       reject();

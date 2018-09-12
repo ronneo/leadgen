@@ -32,7 +32,7 @@ export default class PageSelector extends React.Component {
     if (this.state.selectedPage.id) {
       request.post({
         uri: `${constant.HEROKU_APP_URL}/subscribe_page`,
-        json: { 
+        json: {
           page: this.state.selectedPage,
         },
       })

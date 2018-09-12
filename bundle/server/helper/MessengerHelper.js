@@ -32,6 +32,8 @@ var _DataHandler2 = _interopRequireDefault(_DataHandler);
 
 var _fbtr = require('common/fbtr');
 
+var _cfbtr = require('common/cfbtr');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -70,12 +72,12 @@ var Reaper = function () {
 
   _createClass(Reaper, [{
     key: 'sendMessage',
-    value: function sendMessage(psid, messageObj) {
-      this.messageQueue.push([psid, messageObj]);
+    value: function sendMessage(psid, messageObj, question) {
+      this.messageQueue.push([psid, messageObj, question]);
     }
   }, {
     key: 'fbSendMessageObj',
-    value: function fbSendMessageObj(psid, messageObj) {
+    value: function fbSendMessageObj(psid, messageObj, question) {
       var _this = this;
 
       return new Promise(function (resolve, reject) {
@@ -97,6 +99,11 @@ var Reaper = function () {
             }
           });
           (0, _fbtr.fbtr)(_fbtr.fbtrEvents.LEADGENBOT_MSG_SENT, psid);
+
+          if (question.event ? question.event.startFire : false) {
+            _logger2.default.info('Trigger initial custom event: ' + question.event.name + '.');
+            (0, _cfbtr.cfbtr)(question.event.name, question, psid, { trigger: 'START', payload: '' });
+          }
         });
       });
     }
@@ -114,11 +121,12 @@ var Reaper = function () {
         }
         if (reaper.messageQueue && reaper.messageQueue.length > 0) {
           var _reaper$messageQueue$ = reaper.messageQueue.shift(),
-              _reaper$messageQueue$2 = _slicedToArray(_reaper$messageQueue$, 2),
+              _reaper$messageQueue$2 = _slicedToArray(_reaper$messageQueue$, 3),
               psid = _reaper$messageQueue$2[0],
-              messageObj = _reaper$messageQueue$2[1];
+              messageObj = _reaper$messageQueue$2[1],
+              question = _reaper$messageQueue$2[2];
 
-          fbSendMessageObj(psid, messageObj).then(function (_lastMessageObj) {
+          fbSendMessageObj(psid, messageObj, question).then(function (_lastMessageObj) {
             _reap();
           });
         } else {
@@ -169,7 +177,7 @@ function sendQuestion(userProfile, nextQid, questionFlow) {
           messageObj = _questionHandlerMap$q2[0],
           needNoAnwser = _questionHandlerMap$q2[1];
 
-      _reaper.sendMessage(recipientID, messageObj);
+      _reaper.sendMessage(recipientID, messageObj, question);
       if (needNoAnwser) {
         var nq = questionFlow.findNextQidOfQuestion(question, q);
         return _sendQuestion(nq);
@@ -179,8 +187,8 @@ function sendQuestion(userProfile, nextQid, questionFlow) {
     } else {
       _reaper.sendMessage(recipientID, {
         recipient: { id: recipientID },
-        message: { text: 'That is it! Thanks for your time!' }
-      });
+        message: { text: 'Thank you for your time!' }
+      }, {});
       return q;
     }
   }

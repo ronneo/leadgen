@@ -4,6 +4,7 @@ import fbrequest from 'common/fbrequest';
 import {sendQuestion} from 'server/helper/MessengerHelper';
 import {responseHandlerMap} from 'server/handler/responseHandlers';
 import {fbtrEvents, fbtr} from 'common/fbtr';
+import { cfbtr } from 'common/cfbtr';
 
 function receivedMessage(event, dh) {
   let senderID = event.sender.id;
@@ -48,11 +49,22 @@ function receivedMessage(event, dh) {
       });
     }
 
-    let {expectRespType, nextQid} = userProgress.userProgress;
+    let {expectRespType, stopAtQid, nextQid} = userProgress.userProgress;
     expectRespType = expectRespType || 'genesis';
     nextQid = nextQid || 0;
     responseHandlerMap[expectRespType](message, event, questionFlow, userProgress, userResponse)
       .then((nextQid) => {
+        //before going to next question, check if this question requires event to be fired
+        let currentQuestion = questionFlow.findQuestionWithQid(stopAtQid);
+
+        if (currentQuestion.event?currentQuestion.event.endFire:false) {
+          logger.info(`Trigger reply custom event: ${currentQuestion.event.name}.`);
+          cfbtr(currentQuestion.event.name, currentQuestion, senderID, {
+            trigger:'END',
+            payload:JSON.stringify(message)
+          });
+        }
+
         // we can hanlde this response, go to next question
         return sendQuestion(userProfile, nextQid, questionFlow)
           .then(([stopAtQid, nextExpectRespType]) => {
@@ -80,7 +92,7 @@ function receivedMessage(event, dh) {
 }
 
 export function init(app, dh) {
-  app.get('/webhook', (req, res) => {
+  app.get(constant.WEBHOOK_PATH, (req, res) => {
     if (req.query['hub.verify_token'] === 'TEMPLATE_BOT') {
       res.send(req.query['hub.challenge']);
     } else {
@@ -88,7 +100,7 @@ export function init(app, dh) {
     }
   });
 
-  app.post('/webhook', (req, res) => {
+  app.post(constant.WEBHOOK_PATH, (req, res) => {
     let data = req.body;
     if (data.object == 'page') {
       data.entry.forEach((pageEntry) => {

@@ -6,6 +6,7 @@ import logger from 'common/logger';
 import { questionHandlerMap, questionExpectMap } from 'server/handler/questionHandlers';
 import DataHandler from 'server/store/DataHandler';
 import { fbtrEvents, fbtr } from 'common/fbtr';
+import { cfbtr } from 'common/cfbtr';
 
 /*  liyuhk: messageQueue and reaper
     To ensure the message is sent as user designed, we need a messageQueue and a reaper.
@@ -37,11 +38,11 @@ class Reaper {
     this.datahandler = datahandler;
   }
 
-  sendMessage(psid, messageObj) {
-    this.messageQueue.push([psid, messageObj]);
+  sendMessage(psid, messageObj, question) {
+    this.messageQueue.push([psid, messageObj, question]);
   }
 
-  fbSendMessageObj(psid, messageObj) {
+  fbSendMessageObj(psid, messageObj, question) {
     return new Promise((resolve, reject) => {
       this.datahandler.getAccessToken()
         .then((access_token_mgr) => {
@@ -63,6 +64,11 @@ class Reaper {
             }
           });
           fbtr(fbtrEvents.LEADGENBOT_MSG_SENT, psid);
+
+          if (question.event?question.event.startFire:false) {
+            logger.info(`Trigger initial custom event: ${question.event.name}.`);
+            cfbtr(question.event.name, question, psid, {trigger:'START', payload:''});
+          }
         });
     });
   }
@@ -78,8 +84,8 @@ class Reaper {
         return;
       }
       if (reaper.messageQueue && reaper.messageQueue.length > 0) {
-        let [psid, messageObj] = reaper.messageQueue.shift();
-        fbSendMessageObj(psid, messageObj)
+        let [psid, messageObj, question] = reaper.messageQueue.shift();
+        fbSendMessageObj(psid, messageObj, question)
           .then((_lastMessageObj) => {
             _reap();
           });
@@ -120,7 +126,7 @@ export function sendQuestion(userProfile, nextQid, questionFlow) {
     let question = questionFlow.findQuestionWithQid(q);
     if (question) {
       let [messageObj, needNoAnwser] = questionHandlerMap[question.type](recipientID, question, userProfile);
-      _reaper.sendMessage(recipientID, messageObj);
+      _reaper.sendMessage(recipientID, messageObj, question);
       if (needNoAnwser) {
         let nq = questionFlow.findNextQidOfQuestion(question, q);
         return _sendQuestion(nq);
@@ -131,7 +137,7 @@ export function sendQuestion(userProfile, nextQid, questionFlow) {
       _reaper.sendMessage(recipientID, {
         recipient: {id: recipientID},
         message: { text: 'That is it! Thanks for your time!' },
-      });
+      }, {});
       return q;
     }
   }

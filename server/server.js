@@ -1,9 +1,8 @@
 import bodyParser from 'body-parser';
 import express from 'express';
 import 'express-csv';
-import fs from 'fs';
-import https from 'https';
 import http from 'http';
+import request from 'request-promise';
 
 import constant from 'common/constant';
 import logger from 'common/logger';
@@ -18,8 +17,12 @@ import checkForAccessTokenMiddleware from 'server/helper/AccessTokenHelper';
 logger.info(`app will run with constant like: ${JSON.stringify(constant, null, 2)}`);
 
 export function start(port) {
-  let app = ExpressHelper(express(), process.cwd(), logger);
+  const app = ExpressHelper(express(), process.cwd(), logger);
   app.use(bodyParser.json());
+
+  if (!port) {
+    port = parseInt(process.env.PORT || 5000, 10);
+  }
 
   return DataHandler.get()
     .then((dh) => {
@@ -48,21 +51,33 @@ export function start(port) {
     })
     .then(() => {
       return new Promise((resolve, reject) => {
-        // liyuhk: for heroku, according to:
-        // https://stackoverflow.com/questions/25148507/https-ssl-on-heroku-node-express
-        // we do not need to deal with https, as heroku has us covered with their https router,
-        // so only for local dev  we start an https server
-        const server = process.env.NODE_ENV === 'dev'
-          ? https.createServer({
-            key: fs.readFileSync('./var/server/server.key'),
-            cert: fs.readFileSync('./var/server/server.crt')
-          }, app)
-          : http.createServer(app);
-        let listener = server.listen(port || process.env.PORT || 5000, (err) => {
+        if (process.env.NODE_ENV === 'dev') {
+          request.get({
+            uri: `http://localhost:${port+1}/localtunnel`
+          })
+          .then((body) => {
+            constant.HEROKU_APP_URL = body;
+            resolve();
+          })
+          .catch((err) => {
+            reject(err);
+          });
+        } else {
+          resolve();
+        }
+      });
+    })
+    .then(() => {
+      return new Promise((resolve, reject) => {
+        const server = http.createServer(app);
+        let listener = server.listen(port, (err) => {
           if (err) {
             reject(err);
           } else {
             logger.info(`Your app is listening on port ${listener.address().port}`);
+            if (process.env.NODE_ENV === 'dev') {
+              logger.info(`Please access your server with tunnel:*** ${constant.HEROKU_APP_URL} ***`);
+            }
             resolve(listener);
           }
         });

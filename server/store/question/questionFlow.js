@@ -79,4 +79,30 @@ export default class QuestionFlow {
       return questionID + 1;
     }
   }
+
+  findNextQidOfQuestionInElements(question, questionID, payload) {
+    var nextQid = null;
+
+    question.elements.forEach((element) => {
+      if (nextQid) {
+        return;
+      }
+
+      if (element.buttons) {
+        let button = element.buttons.find((button) => {
+          return button.url == payload;
+        });
+
+        if (button && button.next) {
+          nextQid = this.findQidWithAnchor(button.next);
+        }
+      }
+    });
+
+    if (nextQid) {
+      return nextQid;
+    } else {
+      return questionID + 1;
+    }
+  }
 }

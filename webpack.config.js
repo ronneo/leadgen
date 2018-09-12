@@ -51,7 +51,7 @@ const commonWebpackSetting = {
         loader: 'url-loader?limit=10000&mimetype=image/svg+xml&name=./assets/[hash].[ext]'
       }
     ],
-  }  
+  }
 };
 
 const managerWebpackSetting = Object.assign({}, commonWebpackSetting, {

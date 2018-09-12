@@ -30,14 +30,14 @@ export default class Anchor extends React.Component {
 
   renderChanger() {
     return (
-      <Modal open={this.state.showAnchorChanger} 
-        onClose={this.handleClose.bind(this)} 
-        little={true} 
+      <Modal open={this.state.showAnchorChanger}
+        onClose={this.handleClose.bind(this)}
+        little={true}
         style={{zIndex: '1000'}}>
         <h4>Define Anchor</h4>
-        <input className="form-control" 
-          value={this.props.question.anchor} 
-          ref="anchorInput" 
+        <input className="form-control"
+          value={this.props.question.anchor}
+          ref="anchorInput"
           placeholder="#myanchor" />
         <br />
         <button type="button" className="btn btn-primary" onClick={this.onSaveAnchor.bind(this)}>Save</button>
@@ -47,11 +47,11 @@ export default class Anchor extends React.Component {
 
   render() {
     let question = this.props.question;
-    let anchorSpan = question.anchor ? 
-      <span className="badge badge-info" onClick={this.showAnchorChanger.bind(this)}>{question.anchor}</span> : 
+    let anchorSpan = question.anchor ?
+      <span className="badge badge-info" onClick={this.showAnchorChanger.bind(this)}>{question.anchor}</span> :
       <span className="badge badge-secondary" onClick={this.showAnchorChanger.bind(this)}>+anchor</span>;
     return (
-      <div id={this.genElemID()} style={{marginRight: '1em', cursor: 'pointer'}}>
+      <div id={this.genElemID()} style={{marginRight: '1em', cursor: 'pointer', display:'inline-block'}}>
         {anchorSpan}
         {this.renderChanger()}
       </div>

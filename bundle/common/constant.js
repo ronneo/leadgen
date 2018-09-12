@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 var GRAPH_API_VERSION = 'v3.0';
 var FBSDK_VERSION = 'v3.0';
 var GRAPH_BASE_URL = 'https://graph.facebook.com/' + GRAPH_API_VERSION;
-var HEROKU_APP_URL = process.env.HEROKU_APP_NAME ? 'https://' + process.env.HEROKU_APP_NAME + '.herokuapp.com' : 'https://localhost:5000';
-var CALLBACK_URL = (process.env.HEROKU_APP_NAME ? HEROKU_APP_URL : process.env.HEROKU_LOCAL_URL) + '/webhook';
+var HEROKU_APP_URL = process.env.HEROKU_APP_NAME ? 'https://' + process.env.HEROKU_APP_NAME + '.herokuapp.com' : process.env.HEROKU_LOCAL_URL;
+var WEBHOOK_PATH = '/webhook';
 var FB_APP_ID = process.env.FB_APP_ID;
 var FB_APP_SECRET = process.env.FB_APP_SECRET;
 var FB_APP_ACCESS_TOKEN = FB_APP_ID + '|' + process.env.FB_APP_SECRET;
@@ -24,7 +24,6 @@ var PAGE_ACCESS_TOKEN_KEY = process.env.PAGE_ACCESS_TOKEN_KEY ? process.env.PAGE
 exports.default = {
   ACCESS_TOKEN_REAP_INTERVAL: ACCESS_TOKEN_REAP_INTERVAL,
   ACCESS_TOKEN_TTL: ACCESS_TOKEN_TTL,
-  CALLBACK_URL: CALLBACK_URL,
   FB_APP_ACCESS_TOKEN: FB_APP_ACCESS_TOKEN,
   FB_APP_ID: FB_APP_ID,
   FB_APP_SECRET: FB_APP_SECRET,
@@ -32,6 +31,7 @@ exports.default = {
   GRAPH_API_VERSION: GRAPH_API_VERSION,
   GRAPH_BASE_URL: GRAPH_BASE_URL,
   HEROKU_APP_URL: HEROKU_APP_URL,
+  WEBHOOK_PATH: WEBHOOK_PATH,
   LOCAL_FILE_STORE_PATH: LOCAL_FILE_STORE_PATH,
   PAGE_ACCESS_TOKEN_KEY: PAGE_ACCESS_TOKEN_KEY,
   REDISCLOUD_URL: REDISCLOUD_URL,

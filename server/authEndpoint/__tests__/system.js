@@ -64,7 +64,6 @@ jest.mock('common/constant', () => {
     REDISCLOUD_URL: '',
     FB_APP_ID: 1234,
     FB_APP_ACCESS_TOKEN: '1234|5678',
-    CALLBACK_URL: `http://localhost:${port}/webhook`,
     FB_APP_SECRET: 'helloworld',
     WEBHOOK_VERIFY_TOKEN: 'jedi',
     HEROKU_APP_URL: `http://localhost:${port}`,
