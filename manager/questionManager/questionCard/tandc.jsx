@@ -39,7 +39,7 @@ export default class TandCCard extends React.Component {
   }
 
   onChangeURL(event) {
-    let new_question = Object.assign({}, this.props.question, {URL: event.target.value});
+    let new_question = Object.assign({}, this.props.question, {url: event.target.value});
     this.props.questionFlowUtil.updateQuestion(this.props.qid, new_question);
   }
 

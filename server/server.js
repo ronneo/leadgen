@@ -89,5 +89,7 @@ if (require.main === module) {
   start()
     .then((_listener) => {
       FBGraphHelper.setWebsiteURL();
+    }).catch((err) => {
+      logger.error(`Unable to set Website URL: ${err.message}`);
     });
 }

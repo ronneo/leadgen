@@ -126,6 +126,6 @@ if (require.main === module) {
     _FBGraphHelper2.default.setWebsiteURL();
   }).catch(function (err) {
     _logger2.default.error('Unable to set Website URL: ' + err.message);
-  });;
+  });
 }
 //# sourceMappingURL=server.js.map

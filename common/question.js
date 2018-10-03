@@ -46,11 +46,18 @@ export let questionSamples = {
           'url': '',
           'buttons': [
             {
-              'title': 'Button Title'
+              'title': 'Button Title',
+              'url': ''
             },
           ],
         },
       ]
+    };
+  },
+  'image': () => {
+    return {
+      'type': 'image',
+      'url': 'http://www.starwars.com/news/40-memorable-star-wars-quotes.jpg',
     };
   },
 };

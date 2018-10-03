@@ -136,7 +136,7 @@ export function sendQuestion(userProfile, nextQid, questionFlow) {
     } else {
       _reaper.sendMessage(recipientID, {
         recipient: {id: recipientID},
-        message: { text: 'That is it! Thanks for your time!' },
+        message: { text: 'Thank you for your time!' },
       }, {});
       return q;
     }

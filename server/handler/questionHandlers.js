@@ -37,6 +37,15 @@ export let questionHandlerMap = {
 
   'input': (psid, question, userProfile) => {
     let quick_replies = question.quick_replies || [];
+    if (quick_replies.length === 0) {
+      return [
+        {
+          recipient: { id: psid },
+          message: { text: render_template(question.text, userProfile) },
+        },
+        NEED_ANSWER,
+      ];
+    }
     return [
       {
         recipient: { id: psid },
@@ -90,6 +99,7 @@ export let questionHandlerMap = {
                 var obj = {
                   title: render_template(question.title, userProfile),
                   subtitle: render_template(question.subtitle, userProfile),
+                  image_url: question.image_url,
                 };
 
                 if (question.buttons && question.buttons.length > 0) {
@@ -116,7 +126,24 @@ export let questionHandlerMap = {
           }
         },
       },
-      NEED_ANSWER
+      (question.next?NEED_NO_ANSWER:NEED_ANSWER)
+    ];
+  },
+  'image': (psid, question, userProfile) => {
+    return [
+      {
+        recipient: { id: psid },
+        message: {
+          attachment: {
+            type:'image',
+            payload:{
+              url: question.url,
+              is_reusable: true
+            }
+          }
+        },
+      },
+      NEED_NO_ANSWER,
     ];
   },
 };

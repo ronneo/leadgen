@@ -127,6 +127,16 @@ export default class CarouselCard extends React.Component {
     };
   }
 
+  onChangeNext(event) {
+    let new_question = Object.assign({}, this.props.question, {next: event.target.value});
+    this.props.questionFlowUtil.updateQuestion(this.props.qid, new_question);    
+  }
+
+  onRemoveNext(_event) {
+    let new_question = Object.assign({}, this.props.question, {next: undefined});
+    this.props.questionFlowUtil.updateQuestion(this.props.qid, new_question);
+  }
+
   onRemoveButtonNext(elementIndex, buttonIndex) {
     return (event) => {
       let new_question = immutable.del(
@@ -293,6 +303,13 @@ export default class CarouselCard extends React.Component {
           <form className="form">
             {this.renderElements()}
             {this.renderAddNewElementTrigger()}
+            {ConditionalLogicHelper.renderNextInQuestionIfPossible(
+              this.props.qid,
+              this.props.question, 
+              this.props.questionFlowUtil,
+              this.onChangeNext.bind(this),
+              this.onRemoveNext.bind(this),
+            )}
           </form>
         </div>
       </div>

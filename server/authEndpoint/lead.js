@@ -10,9 +10,9 @@ function genCSVBuilder(dh, flatattr) {
       question_flow.questions.forEach((question, index) => {
         let needNoAnswer = questionHandlerMap[question.type](0, question, {})[1];
         if (!needNoAnswer) {
-          header.push(`q${index}`);
-          header.push(`payload${index}`);
-          header.push(`timeofmessage${index}`);
+          header.push(`query no.${index}`);
+          header.push(`reply payload no.${index}`);
+          header.push(`time of message for ${index}`);
         }
       });
       flatattr.push(header);
@@ -23,14 +23,22 @@ function genCSVBuilder(dh, flatattr) {
         let row = (new Array(header.length)).map(() => { return ''; });
         row[0] = key;
         user_resps.forEach((resp) => {
-          let index = header.indexOf(`q${resp.qid}`);
+          let index = header.indexOf(`query no.${resp.qid}`);
+          
           row[index] = resp.qid;
           row[index+1] = resp.payload;
-          row[index+2] = resp.timeOfMessage;
+          row[index+2] = getReadableDatetime(resp.timeOfMessage);
         });
         flatattr.push(row);
       };
     });
+}
+
+function getReadableDatetime(unixtimestamp) {
+  let a = new Date(unixtimestamp);
+  let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  return a.getDate() + ' ' + months[a.getMonth()] + ' ' + a.getFullYear() + ' ' + a.getHours() + ':' + a.getMinutes();
 }
 
 function loadOneUserResponse(dh, key, csv_builder) {

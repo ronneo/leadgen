@@ -3,6 +3,7 @@ import GreetingCard from './greeting.jsx';
 import InputCard from './input.jsx';
 import TandCCard from './tandc.jsx';
 import CarouselCard from './carousel.jsx';
+import ImageCard from './image.jsx';
 
 let allCards = [
   GreetingCard,
@@ -10,6 +11,7 @@ let allCards = [
   InputCard,
   TandCCard,
   CarouselCard,
+  ImageCard
 ];
 
 export let questionCardGeneratorMap = allCards.reduce((map, questionCard) => {
